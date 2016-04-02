@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "shinyServer(function(input, output) {\n  \n  output$text1 <- renderText({ \n    paste(\"You have selected:\", input$var)\n  })\n  \n  output$text2 <- renderText({\n    statepop <- read.csv(\"data/CENSUS_STATEPOP.csv\")\n    state <- statepop[statepop$name == input$var,]$name\n    paste(\"The population of \", input$var, \" in 2010 was: \", \n          format(statepop[statepop$name == state,]$census, big.mark = \",\", small.interval = 3), \n          \" In 2015 it was estimated to be: \", \n          format(statepop[statepop$name == state,]$pop2015, big.mark = \",\", small.interval = 3))\n  })\n  \n  output$text3 <- renderText({\n    statepop <- read.csv(\"data/CENSUS_STATEPOP.csv\")\n    state <- statepop[statepop$name == input$var,]$name\n    \n    totalPop <- statepop[statepop$name == state,]$pop2015\n    \n    # Population Calculation\n    birthRate1k<-(input$yrBirths/totalPop)\n    deathRate1k<-(input$yrDeaths/totalPop)\n    rateNaturalIncr<-(birthRate1k - deathRate1k)\n    estimatedPopulation<-(totalPop*rateNaturalIncr) + input$yrNetMigration + totalPop\n    \n    paste(\"Based on your assumptions, the population of \", input$var, \" in 2016 will be: \", \n          format(estimatedPopulation, big.mark = \",\", small.interval = 3))\n  })\n\n    output$popplot <- renderPlot({\n    statepop <- read.csv(\"data/CENSUS_STATEPOP.csv\")\n    state <- statepop[statepop$name == input$var,]$name\n    year2011 <- statepop[statepop$name == state,]$pop2011 - statepop[statepop$name == state,]$census\n    year2012 <- statepop[statepop$name == state,]$pop2012 - statepop[statepop$name == state,]$pop2011\n    year2013 <- statepop[statepop$name == state,]$pop2013 - statepop[statepop$name == state,]$pop2012\n    year2014 <- statepop[statepop$name == state,]$pop2014 - statepop[statepop$name == state,]$pop2013\n    year2015 <- statepop[statepop$name == state,]$pop2015 - statepop[statepop$name == state,]$pop2014\n    population <- matrix(c(year2011,year2012,year2013,year2014,year2015),ncol=5,byrow=TRUE)\n    colnames(population) <- c(\"2011\",\"2012\",\"2013\",\"2014\",\"2015\")\n    opt <- options(\"scipen\" = 20)\n    population <- as.table(population)\n    barplot(population, \n            main=statepop[statepop$name == input$var,]$name, \n            xlab=\"Population Change from previous year\",\n            col=c(\"cyan\")) \n            #gray.colors(length(unique(population)))[as.factor(population)])\n})\n  \n}\n)\n",
+    "created" : 1457063131609.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2980113050",
+    "id" : "926D7BA9",
+    "lastKnownWriteTime" : 1459470568,
+    "last_content_update" : 1459470568,
+    "path" : "~/coursera/Shiny1a/server.R",
+    "project_path" : "server.R",
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
